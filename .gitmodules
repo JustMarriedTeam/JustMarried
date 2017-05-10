@@ -1,0 +1,9 @@
+[submodule "JustMarriedClient"]
+	path = JustMarriedClient
+	url = https://github.com/JustMarriedTeam/JustMarriedClient.git
+[submodule "JustMarriedServer"]
+	path = JustMarriedServer
+	url = https://github.com/JustMarriedTeam/JustMarriedServer.git
+[submodule "JustMarriedDocs"]
+	path = JustMarriedDocs
+	url = https://github.com/JustMarriedTeam/JustMarriedDocs.git
