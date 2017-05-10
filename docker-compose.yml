@@ -1,0 +1,56 @@
+version: "3"
+
+services:
+
+  db:
+    image: mongo:3.4.3
+    labels:
+      - just-married-db
+    networks:
+      backnet:
+        ipv4_address: 172.0.1.2
+    volumes:
+      - ./database/data:/data
+      - ./database/dump:/dump
+    ports:
+      - "27017:27017"
+
+  server:
+    image: justmarried/just-married-server:latest
+    labels:
+      - just-married-server
+    build:
+      context: JustMarriedServer
+      dockerfile: docker/Dockerfile
+    networks:
+      backnet:
+        ipv4_address: 172.0.1.3
+
+  client:
+    image: justmarried/just-married-client:latest
+    labels:
+        - just-married-client
+    build:
+      context: JustMarriedClient
+      dockerfile: docker/Dockerfile
+    networks:
+      - justmarriednet
+    networks:
+      backnet:
+        ipv4_address: 172.0.1.4
+      frontnet:
+        ipv4_address: 172.0.2.2
+    ports:
+      - "8080:80"
+
+networks:
+
+  backnet:
+    ipam:
+      config:
+        - subnet: 172.0.1.0/24
+
+  frontnet:
+    ipam:
+      config:
+        - subnet: 172.0.2.0/24
