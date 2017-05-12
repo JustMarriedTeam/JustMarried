@@ -22,6 +22,8 @@ services:
     build:
       context: JustMarriedServer
       dockerfile: docker/Dockerfile
+    depends_on:
+      - db
     networks:
       backnet:
         ipv4_address: 172.0.1.3
@@ -29,7 +31,7 @@ services:
   client:
     image: justmarried/just-married-client:latest
     labels:
-        - just-married-client
+      - just-married-client
     build:
       context: JustMarriedClient
       dockerfile: docker/Dockerfile
