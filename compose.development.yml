@@ -1,0 +1,76 @@
+version: "3"
+
+services:
+
+  devdb:
+    image: mongo:3.4.3
+    labels:
+      - jmdb-dev
+    networks:
+      devbacknet:
+        ipv4_address: 172.10.1.2
+    volumes:
+      - ./database/data:/data
+      - ./database/dump:/dump
+    ports:
+      - "27017:27017"
+
+  devmemcached:
+    image: memcached:1.4.36
+    labels:
+      - jmmemcached-dev
+    networks:
+      devbacknet:
+        ipv4_address: 172.10.1.4
+    ports:
+      - "11211:11211"
+
+  devserver:
+    image: justmarried/jmserver:development-latest
+    build:
+      context: JustMarriedServer
+      dockerfile: containers/develop/Dockerfile
+    labels:
+      - jmserver-dev
+    ports:
+      - 2701:2701
+    volumes:
+      - ./JustMarriedServer:/app
+    depends_on:
+      - devdb
+      - devmemcached
+    networks:
+      devbacknet:
+        ipv4_address: 172.10.1.3
+    environment:
+      - AUTH_REDIRECT_URL=http://192.168.99.100:3000/redirect.html?token=%s
+      - PROTOCOL=http
+      - HOST=192.168.99.100
+      - PORT=2701
+      - JWT_SECRET=0a6b944d-d2fb-46fc-a85e-0295c986cd9f
+      - MEMCACHED_SERVERS=172.10.1.4:11211
+      - MEMCACHED_USERNAME=memcached
+      - MEMCACHED_PASSWORD=
+      - SESSION_SECRET=secret
+      - DB_URL=mongodb://172.10.1.2:27017
+
+  devswagger:
+    image: swaggerapi/swagger-ui:v3.0.5
+    labels:
+      - jmswagger-dev
+    networks:
+      devbacknet:
+        ipv4_address: 172.10.1.5
+    ports:
+      - "5000:8080"
+    depends_on:
+      - devserver
+    environment:
+      - API_URL=http://192.168.99.100:2701/api/api-docs
+
+networks:
+
+  devbacknet:
+    ipam:
+      config:
+        - subnet: 172.10.1.0/24
