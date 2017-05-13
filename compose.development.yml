@@ -13,7 +13,7 @@ services:
       - ./database/data:/data
       - ./database/dump:/dump
     ports:
-      - "27017:27017"
+      - 27017:27017
 
   devmemcached:
     image: memcached:1.4.36
@@ -23,7 +23,7 @@ services:
       devbacknet:
         ipv4_address: 172.10.1.4
     ports:
-      - "11211:11211"
+      - 11211:11211
 
   devserver:
     image: justmarried/jmserver:development-latest
@@ -34,6 +34,7 @@ services:
       - jmserver-dev
     ports:
       - 2701:2701
+      - 5858:5858
     volumes:
       - ./JustMarriedServer:/app
     depends_on:
@@ -62,7 +63,7 @@ services:
       devbacknet:
         ipv4_address: 172.10.1.5
     ports:
-      - "5000:8080"
+      - 5000:8080
     depends_on:
       - devserver
     environment:
