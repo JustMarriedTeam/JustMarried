@@ -69,6 +69,21 @@ services:
     environment:
       - API_URL=http://192.168.99.100:2701/api/api-docs
 
+  devclient:
+    image: justmarried/jmclient:development-latest
+    build:
+      context: JustMarriedClient
+      dockerfile: containers/develop/Dockerfile
+    network_mode: host
+    volumes:
+      - ./JustMarriedClient:/app
+    labels:
+      - jmclient-dev
+    depends_on:
+      - devserver
+    environment:
+      - SERVER_API_URL=http://192.168.99.100:2701/api
+
 networks:
 
   devbacknet:
