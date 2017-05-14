@@ -5,5 +5,10 @@ export VERSION=latest
 
 export SERVER_API_URL=http://192.168.99.100:2701/api
 
-./JustMarriedClient/build.sh
-./JustMarriedServer/build.sh
+ROOT_DIR=$(pwd)
+
+cd ${ROOT_DIR}/JustMarriedClient
+./build.sh
+
+cd ${ROOT_DIR}/JustMarriedServer
+./build.sh

@@ -2,59 +2,81 @@ version: "3"
 
 services:
 
-  db:
+  proddb:
     image: mongo:3.4.3
     labels:
-      - just-married-db
+      - jmdb-prod
     networks:
-      backnet:
-        ipv4_address: 172.0.1.2
+      prodbacknet:
+        ipv4_address: 172.100.1.2
     volumes:
       - ./database/data:/data
       - ./database/dump:/dump
     ports:
-      - "27017:27017"
+      - 27017:27017
 
-  server:
+  prodmemcached:
+    image: memcached:1.4.36
+    labels:
+      - jmmemcached-prod
+    networks:
+      prodbacknet:
+        ipv4_address: 172.100.1.4
+    ports:
+      - 11211:11211
+
+  prodserver:
     image: justmarried/jmserver:production-latest
     labels:
-      - just-married-server
+      - jmserver-prod
+    ports:
+      - 2701:2701
+      - 5858:5858
     depends_on:
-      - db
+      - proddb
+      - prodmemcached
     networks:
-      backnet:
-        ipv4_address: 172.0.1.3
+      prodbacknet:
+        ipv4_address: 172.100.1.3
     environment:
-      - AUTH_REDIRECT_URL=http://localhost:3000/redirect.html?token=%s
+      - AUTH_REDIRECT_URL=http://192.168.99.100:3000/redirect.html?token=%s
       - PROTOCOL=http
       - HOST=192.168.99.100
       - PORT=2701
       - JWT_SECRET=0a6b944d-d2fb-46fc-a85e-0295c986cd9f
-      - DB_URL=mongodb://172.0.1.2:27017
+      - MEMCACHED_SERVERS=172.100.1.4:11211
+      - MEMCACHED_USERNAME=memcached
+      - MEMCACHED_PASSWORD=
       - SESSION_SECRET=secret
+      - DB_URL=mongodb://172.100.1.2:27017
 
-  client:
-    image: justmarried/jmclient:production-latest
+  prodswagger:
+    image: swaggerapi/swagger-ui:v3.0.5
     labels:
-      - just-married-client
+      - jmswagger-prod
     networks:
-      - justmarriednet
-    networks:
-      backnet:
-        ipv4_address: 172.0.1.4
-      frontnet:
-        ipv4_address: 172.0.2.2
+      devbacknet:
+        ipv4_address: 172.100.1.5
     ports:
-      - "8080:80"
+      - 5000:8080
+    depends_on:
+      - prodserver
+    environment:
+      - API_URL=http://192.168.99.100:2701/api/api-docs
+
+  prodclient:
+    image: justmarried/jmclient:production-latest
+    network_mode: host
+    labels:
+      - jmclient-prod
+    depends_on:
+      - prodserver
+    environment:
+      - SERVER_API_URL=http://192.168.99.100:2701/api
 
 networks:
 
-  backnet:
+  prodbacknet:
     ipam:
       config:
-        - subnet: 172.0.1.0/24
-
-  frontnet:
-    ipam:
-      config:
-        - subnet: 172.0.2.0/24
+        - subnet: 172.100.1.0/24
