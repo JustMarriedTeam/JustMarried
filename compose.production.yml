@@ -55,7 +55,7 @@ services:
     labels:
       - jmswagger-prod
     networks:
-      devbacknet:
+      prodbacknet:
         ipv4_address: 172.100.1.5
     ports:
       - 5000:8080
