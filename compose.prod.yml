@@ -1,3 +1,8 @@
+#
+# This compose file is responsible for bootstrapping entire ecosystem in production mode.
+# If you are to develop only a particular component you will be better off with its own compose
+# file as it contains only the minimum set of services needed.
+#
 version: "3"
 
 services:
@@ -10,8 +15,8 @@ services:
       prodbacknet:
         ipv4_address: 172.100.1.2
     volumes:
-      - ./database/data:/data
-      - ./database/dump:/dump
+      - ./JustMarriedServer/database/data:/data
+      - ./JustMarriedServer/database/dump:/dump
     ports:
       - 27017:27017
 
