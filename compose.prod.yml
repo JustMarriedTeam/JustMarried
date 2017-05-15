@@ -3,7 +3,7 @@
 # If you are to develop only a particular component you will be better off with its own compose
 # file as it contains only the minimum set of services needed.
 #
-version: "3"
+version: "2"
 
 services:
 
