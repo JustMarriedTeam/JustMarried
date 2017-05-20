@@ -10,6 +10,12 @@
   ],
   "containerDefinitions": [
     {
+      "name": "memcached",
+      "image": "memcached:1.4.36",
+      "essential": true,
+      "memory": 128
+    },
+    {
       "name": "db",
       "image": "mongo:3.4.3",
       "essential": true,
@@ -39,7 +45,45 @@
         }
       ],
       "links": [
-        "db"
+        "db", "memcached"
+      ],
+      "environment": [
+        {
+          "name": "SESSION_SECRET",
+          "value": "jlaj3oiajrfhfwaosifhasfafag"
+        },
+        {
+          "name": "MEMCACHED_SERVERS",
+          "value": "memcached"
+        },
+        {
+          "name": "MEMCACHED_USERNAME",
+          "value": "memcached"
+        },
+        {
+          "name": "MEMCACHED_PASSWORD",
+          "value": ""
+        },
+        {
+          "name": "HOST",
+          "value": ""
+        },
+        {
+          "name": "PORT",
+          "value": ""
+        },
+        {
+          "name": "DOMAIN",
+          "value": ""
+        },
+        {
+          "name": "DB_URL",
+          "value": "db"
+        },
+        {
+          "name": "JWT_SECRET",
+          "value": "asfwu082uwroidfosf"
+        }
       ]
     },
     {
