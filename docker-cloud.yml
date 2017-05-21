@@ -1,0 +1,30 @@
+client:
+  image: 'justmarried/just-married-client:latest'
+  net: host
+  ports:
+    - '80:80'
+memcached:
+  image: 'memcached:1.4.36'
+mongo:
+  image: 'mongo:3.4.3'
+  volumes:
+    - /data
+server:
+  environment:
+    - 'DB_URL=mongodb://mongo:27017'
+    - 'HOST=${DOCKERCLOUD_IP_ADDRESS}'
+    - 'JWT_SECRET=0a6b944d-d2fb-46fc-a85e-0295c986cd9f'
+    - 'MEMCACHED_PASSWORD=""'
+    - 'MEMCACHED_SERVERS=memcached:11211'
+    - 'MEMCACHED_USERNAME=memcached'
+    - 'PORT=2701'
+    - 'PROTOCOL=http'
+    - 'SESSION_SECRET=sdjflji#$(9s0dfpojsps'
+  net: host
+  ports:
+    - '2701:2701'
+  image: 'justmarried/just-married-server:latest'
+  links:
+    - memcached
+    - mongo
+  target_num_containers: 2
