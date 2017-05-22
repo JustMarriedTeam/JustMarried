@@ -7,12 +7,14 @@ memcached:
   image: 'memcached:1.4.36'
 mongo:
   image: 'mongo:3.4.3'
+  ports:
+    - '27017:27017'
   volumes:
     - /data
 server:
   environment:
-    - 'DB_URL=mongodb://mongo:27017'
-    - 'HOST=${DOCKERCLOUD_IP_ADDRESS}'
+    - 'DB_URL=mongodb://mongo:27017/db'
+    - 'HOST=$DOCKERCLOUD_SERVICE_HOSTNAME'
     - 'JWT_SECRET=0a6b944d-d2fb-46fc-a85e-0295c986cd9f'
     - 'MEMCACHED_PASSWORD=""'
     - 'MEMCACHED_SERVERS=memcached:11211'
@@ -20,11 +22,10 @@ server:
     - 'PORT=2701'
     - 'PROTOCOL=http'
     - 'SESSION_SECRET=sdjflji#$(9s0dfpojsps'
-  net: host
-  ports:
-    - '2701:2701'
   image: 'justmarried/just-married-server:latest'
   links:
     - memcached
     - mongo
-  target_num_containers: 2
+  ports:
+    - '2701:2701'
+  sequential_deployment: true
