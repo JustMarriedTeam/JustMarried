@@ -3,7 +3,7 @@
 export ENVIRONMENT=production
 export VERSION=latest
 
-export SERVER_API_URL=http://192.168.99.100:2701/api
+export SERVER_API_URL=http://localhost:2701/api
 
 ROOT_DIR=$(pwd)
 
