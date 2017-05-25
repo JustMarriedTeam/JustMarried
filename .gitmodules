@@ -7,3 +7,6 @@
 [submodule "JustMarriedDocs"]
 	path = JustMarriedDocs
 	url = https://github.com/JustMarriedTeam/JustMarriedDocs.git
+[submodule "JustMarriedTools"]
+	path = JustMarriedTools
+	url = https://github.com/JustMarriedTeam/JustMarriedTools.git
