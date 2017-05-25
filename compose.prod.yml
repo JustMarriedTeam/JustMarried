@@ -27,7 +27,7 @@ services:
       - 11211:11211
 
   server:
-    image: justmarried/jmserver:production-latest
+    image: justmarried/just-married-server:latest
     ports:
       - 2701:2701
     depends_on:
@@ -62,7 +62,7 @@ services:
       - API_URL=http://localhost:2701/api/api-docs
 
   client:
-    image: justmarried/jmclient:production-latest
+    image:  justmarried/just-married-client:latest
     network_mode: host
     depends_on:
       - server
