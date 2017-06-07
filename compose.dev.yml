@@ -7,46 +7,40 @@ version: "2"
 
 services:
 
-  devdb:
+  db:
     image: mongo:3.4.3
-    labels:
-      - jmdb-dev
     networks:
-      devbacknet:
+      backnet:
         ipv4_address: 172.100.1.2
     volumes:
-      - ./JustMarriedServer/database/data:/data
+      - ./JustMarriedServer/database/data:/data/db
       - ./JustMarriedServer/database/dump:/dump
     ports:
       - 27017:27017
 
-  devmemcached:
+  memcached:
     image: memcached:1.4.36
-    labels:
-      - jmmemcached-dev
     networks:
-      devbacknet:
+      backnet:
         ipv4_address: 172.100.1.4
     ports:
       - 11211:11211
 
-  devserver:
+  server:
     image: justmarried/jmserver:development-latest
     build:
       context: JustMarriedServer
       dockerfile: containers/develop/Dockerfile
-    labels:
-      - jmserver-dev
     ports:
       - 2701:2701
       - 5858:5858
     volumes:
       - ./JustMarriedServer:/app
     depends_on:
-      - devdb
-      - devmemcached
+      - db
+      - memcached
     networks:
-      devbacknet:
+      backnet:
         ipv4_address: 172.100.1.3
     environment:
       - PROTOCOL=http
@@ -59,21 +53,19 @@ services:
       - SESSION_SECRET=secret
       - DB_URL=mongodb://172.100.1.2:27017
 
-  devswagger:
+  swagger:
     image: swaggerapi/swagger-ui:v3.0.5
-    labels:
-      - jmswagger-dev
     networks:
-      devbacknet:
+      backnet:
         ipv4_address: 172.100.1.5
     ports:
       - 5000:8080
     depends_on:
-      - devserver
+      - server
     environment:
       - API_URL=http://localhost:2701/api/api-docs
 
-  devclient:
+  client:
     image: justmarried/jmclient:development-latest
     build:
       context: JustMarriedClient
@@ -82,16 +74,14 @@ services:
       - 80:80
     volumes:
       - ./JustMarriedClient:/app
-    labels:
-      - jmclient-dev
     depends_on:
-      - devserver
+      - server
     environment:
       - SERVER_API_URL=http://localhost:2701/api
 
 networks:
 
-  devbacknet:
+  backnet:
     ipam:
       config:
         - subnet: 172.100.1.0/24
