@@ -7,14 +7,14 @@ version: "2"
 
 services:
 
-  mongo:
+  db:
     image: mongo:3.4.3
     networks:
       appnet:
         ipv4_address: 172.150.1.2
     volumes:
-      - ./JustMarriedServer/database/data:/data
-      - ./JustMarriedServer/database/dump:/dump
+      - ./.tmp/database/data:/data/db
+      - ./JustMarriedTools/database/dump:/dump
     ports:
       - 27017:27017
 
@@ -31,7 +31,7 @@ services:
     ports:
       - 2701:2701
     depends_on:
-      - mongo
+      - db
       - memcached
     networks:
       appnet:

@@ -13,8 +13,8 @@ services:
       backnet:
         ipv4_address: 172.100.1.2
     volumes:
-      - ./JustMarriedServer/database/data:/data/db
-      - ./JustMarriedServer/database/dump:/dump
+      - ./.tmp/database/data:/data/db
+      - ./JustMarriedTools/database/dump:/dump
     ports:
       - 27017:27017
 
